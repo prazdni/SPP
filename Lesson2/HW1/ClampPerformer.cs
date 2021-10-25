@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class ClampPerformer : MonoBehaviour
 {
-    [SerializeField] private int arraySize;
-    [SerializeField] private int maxRand;
-    [SerializeField] private int maxNum;
-    private NativeArray<int> nums;
+    [SerializeField] private int _arraySize;
+    [SerializeField] private int _maxRand;
+    [SerializeField] private int _maxNum;
+    private NativeArray<int> _nums;
     private JobHandle _initJobhandle;
     private JobHandle _clampJobHandle;
 
     private IEnumerator Start()
     {
-        nums = new NativeArray<int>(arraySize, Allocator.TempJob);
-        InitJob initJob = new InitJob { initNums = nums, maxRand = maxRand };
+        _nums = new NativeArray<int>(_arraySize, Allocator.TempJob);
+        InitJob initJob = new InitJob { initNums = _nums, maxRand = _maxRand };
         _initJobhandle = initJob.Schedule();
         
-        ClampJob clampJob = new ClampJob { nums = nums, maxNum = maxNum };
+        ClampJob clampJob = new ClampJob { nums = _nums, maxNum = _maxNum };
         _clampJobHandle = clampJob.Schedule(_initJobhandle);
         _clampJobHandle.Complete();
 
          while (!_clampJobHandle.IsCompleted)
             yield return new WaitForEndOfFrame();
 
-        for(int i = 0; i < arraySize; i++)
-            Debug.Log(nums[i]);
+        for(int i = 0; i < _arraySize; i++)
+            Debug.Log(_nums[i]);
         
-        nums.Dispose();
+        _nums.Dispose();
     }
 }

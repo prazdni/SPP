@@ -4,7 +4,6 @@ using System;
 
 public struct InitJob : IJob
 {
-    [WriteOnly]
     public NativeArray<int> initNums;
     [ReadOnly]
     public int maxRand;
